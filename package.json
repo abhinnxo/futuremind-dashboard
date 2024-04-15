@@ -37,7 +37,7 @@
     "tailwindcss": "^3.4.3"
   },
   "lint-staged": {
-    "src//*.{js,jsx,html,css}": "prettier --write",
-    "src//*.{js,jsx}": "eslint --fix --max-warnings=0"
+    "src/**/*.{js,jsx,html,css}": "prettier --write",
+    "src/**/*.{js,jsx}": "eslint --fix --max-warnings=0"
   }
 }
