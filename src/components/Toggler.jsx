@@ -11,7 +11,7 @@ function Toggler({ text }) {
       <Switch
         checked={enabled}
         onChange={setEnabled}
-        className={`${enabled ? 'bg-primary-600' : 'bg-secondary-500'}
+        className={`${enabled ? 'nav-active' : 'nav-active'}
           relative inline-flex h-5 w-8 items-center rounded-full`}
       >
         <span className="sr-only">Use setting</span>
