@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { Switch } from '@headlessui/react';
 
-function Toggler({ text }) {
+function Toggle({ text }) {
   const [enabled, setEnabled] = useState(false);
 
   return (
@@ -26,4 +26,4 @@ function Toggler({ text }) {
   );
 }
 
-export default Toggler;
+export default Toggle;
