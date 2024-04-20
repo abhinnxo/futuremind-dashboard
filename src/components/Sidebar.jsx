@@ -36,6 +36,61 @@ const Sidebar = ({ children }) => {
   return (
     <>
       <div>
+        {/* //* Desktop Nav */}
+        <div className="hidden border lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-52 lg:flex-col">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
+            <div className="flex items-center">
+              <Image
+                className="p-2"
+                src={Logo}
+                priority
+                alt="Truemind Dashboard"
+              />
+            </div>
+            <hr />
+            <nav className="flex flex-1 flex-col">
+              <ul role="list" className="flex flex-1 flex-col gap-y-7">
+                <li>
+                  <ul role="list" className="-mx-2 space-y-1">
+                    {navigation.map((item) => {
+                      const isActive = item.href === pathname;
+                      return (
+                        <li key={item.name}>
+                          <Link
+                            href={item.href}
+                            className={classNames(
+                              isActive
+                                ? 'bg-nav-active text-white'
+                                : 'text-nav-text hover:text-on-hover hover:bg-nav-hover',
+                              'group flex gap-x-3 rounded-md p-2 text-xs leading-6',
+                            )}
+                          >
+                            {item.name}
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </li>
+
+                <li className="mt-auto">
+                  <Link
+                    href="#"
+                    className="group -mx-2 flex justify-end gap-x-3 rounded-md p-2 bg-nav-active text-sm font-semibold leading-6 text-white hover:bg-nav-hover hover:text-on-hover"
+                  >
+                    <span>Logout</span>
+                    <ArrowRightEndOnRectangleIcon
+                      className="h-6 w-6 shrink-0 text-white group-hover:text-white"
+                      aria-hidden="true"
+                    />
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        {/* //* Mobile Nav */}
         <Transition.Root show={sidebarOpen} as={Fragment}>
           <Dialog
             as="div"
@@ -139,59 +194,7 @@ const Sidebar = ({ children }) => {
           </Dialog>
         </Transition.Root>
 
-        <div className="hidden border lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-52 lg:flex-col">
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
-            <div className="flex items-center">
-              <Image
-                className="p-2"
-                src={Logo}
-                priority
-                alt="Truemind Dashboard"
-              />
-            </div>
-            <hr />
-            <nav className="flex flex-1 flex-col">
-              <ul role="list" className="flex flex-1 flex-col gap-y-7">
-                <li>
-                  <ul role="list" className="-mx-2 space-y-1">
-                    {navigation.map((item) => {
-                      const isActive = item.href === pathname;
-                      return (
-                        <li key={item.name}>
-                          <Link
-                            href={item.href}
-                            className={classNames(
-                              isActive
-                                ? 'bg-nav-active text-white'
-                                : 'text-nav-text hover:text-on-hover hover:bg-nav-hover',
-                              'group flex gap-x-3 rounded-md p-2 text-xs leading-6',
-                            )}
-                          >
-                            {item.name}
-                          </Link>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </li>
-
-                <li className="mt-auto">
-                  <Link
-                    href="#"
-                    className="group -mx-2 flex justify-end gap-x-3 rounded-md p-2 bg-nav-active text-sm font-semibold leading-6 text-white hover:bg-nav-hover hover:text-on-hover"
-                  >
-                    <span>Logout</span>
-                    <ArrowRightEndOnRectangleIcon
-                      className="h-6 w-6 shrink-0 text-white group-hover:text-white"
-                      aria-hidden="true"
-                    />
-                  </Link>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-
+        {/* //* Main Content */}
         <div className="lg:pl-52">
           <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-white px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
             <button
