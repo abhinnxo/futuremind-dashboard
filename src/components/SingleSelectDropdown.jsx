@@ -3,21 +3,24 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { Listbox } from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 import ArrowHead from '../app/assets/icons/up-arrow.svg';
-import Cross from '../app/assets/icons/cross.svg';
 
 function SingleSelectDropdown({ text, options }) {
   const [selectedOption, setSelectedOption] = useState(options[0]);
 
   return (
-    <span className="flex gap-2 items-center w-fit">
-      <p className="font-medium text-md">{text}</p>
+    <span className="flex gap-2 items-center w-fit max-sm:flex-wrap">
+      <p className="font-medium text-md w-full">{text}</p>
       <div className="w-full relative">
         <span
           className="rounded-full p-1 bg-secondary-500 absolute right-8 top-3 z-10 cursor-pointer"
           onClick={() => setSelectedOption(options[0])}
         >
-          <Image src={Cross} alt="up-arrow" width={10} height={10} />
+          <XMarkIcon
+            className="h-5 w-5 text-white bg-nav-hover rounded-full p-1 -mt-1"
+            aria-hidden="true"
+          />
         </span>
         <Listbox value={setSelectedOption} onChange={setSelectedOption}>
           {({ open }) => (
