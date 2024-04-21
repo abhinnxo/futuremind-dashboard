@@ -1,5 +1,6 @@
 const PRIMITIVES = {
   primary: {
+    300: '#0750F0',
     500: '#3170f8',
   },
   secondary: {
@@ -11,12 +12,13 @@ const PRIMITIVES = {
   },
 };
 
-const BUTTON = {
-  primary: {
-    500: '#3170F9',
-    300: '#0750F0',
-  },
-};
+// *** Curious as to why different naming convention, we could just define the primitive colours *** //
+// const BUTTON = {
+//   primary: {
+//     500: '#3170F9',
+//     300: '#0750F0',
+//   },
+// };
 
 const componentColors = {
   'nav-active': PRIMITIVES.primary[500],
@@ -24,8 +26,8 @@ const componentColors = {
   'nav-text': PRIMITIVES.tertiary[500],
   'on-hover': PRIMITIVES.primary[500],
   'secondary-300': PRIMITIVES.secondary[300],
-  'btn-primary': BUTTON.primary[500],
-  'btn-hover': BUTTON.primary[300],
+  'btn-primary': PRIMITIVES.primary[500],
+  'btn-hover': PRIMITIVES.primary[300],
 };
 
 module.exports = {
