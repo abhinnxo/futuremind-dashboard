@@ -1,4 +1,5 @@
-'use client';
+// *** The need for 'use client' *** //
+// 'use client';
 
 import Button from '@/components/Button';
 import SingleSelectDropdown from '@/components/SingleSelectDropdown';
