@@ -10,7 +10,7 @@ import {
   ArrowRightEndOnRectangleIcon,
 } from '@heroicons/react/24/outline';
 import { usePathname } from 'next/navigation';
-
+import classNames from '@/utils/classnames';
 import Logo from '../../public/logo.png';
 
 const navigation = [
@@ -24,10 +24,6 @@ const navigation = [
   { name: 'Mandate', href: '/mandate' },
   { name: 'Investments', href: '/investments' },
 ];
-
-function classNames(...classes) {
-  return classes.filter(Boolean).join(' ');
-}
 
 const Sidebar = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
