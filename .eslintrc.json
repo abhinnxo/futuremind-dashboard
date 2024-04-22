@@ -19,6 +19,7 @@
   },
   "rules": {
     // "import/no-unresolved": "error",
+    "react/no-array-index-key": ["error"],
     "prettier/prettier": [
       "error",
       {
