@@ -2,6 +2,7 @@ const PRIMITIVES = {
   primary: {
     300: '#0750F0',
     500: '#3170f8',
+    100: '#d6e2fe',
   },
   secondary: {
     500: '#e6e6e6',
@@ -28,6 +29,7 @@ const componentColors = {
   'secondary-300': PRIMITIVES.secondary[300],
   'btn-primary': PRIMITIVES.primary[500],
   'btn-hover': PRIMITIVES.primary[300],
+  'btn-selected': PRIMITIVES.primary[100],
 };
 
 module.exports = {
