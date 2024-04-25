@@ -9,7 +9,7 @@ import {
   getPaginationRowModel,
 } from '@tanstack/react-table';
 
-const Table = ({ dataJSON, columnDef }) => {
+const Table = ({ dataJSON, columnDef, enablePagination }) => {
   const finalData = useMemo(() => dataJSON, [dataJSON]);
   const finalColumnDef = useMemo(() => columnDef, [columnDef]);
 
@@ -22,9 +22,9 @@ const Table = ({ dataJSON, columnDef }) => {
   });
 
   return (
-    <div>
+    <div className="bg-white border p-2 rounded-md">
       <div className="overflow-x-scroll">
-        <table>
+        <table className="w-full">
           <thead>
             {tableInstance.getHeaderGroups().map((headerEl) => {
               return (
@@ -70,55 +70,56 @@ const Table = ({ dataJSON, columnDef }) => {
           </tbody>
         </table>
       </div>
-
-      <div className="flex justify-center gap-2 mt-2">
-        <button
-          className={`font-bold border py-1 px-2 rounded-sm hover:bg-nav-hover ${tableInstance.getCanPreviousPage() ? '' : 'opacity-50 cursor-not-allowed'}`}
-          onClick={() => tableInstance.setPageIndex(0)}
-          disabled={!tableInstance.getCanPreviousPage()}
-        >
-          &lt;&lt;
-        </button>
-        <button
-          className={`font-bold border py-1 px-2 rounded-sm hover:bg-nav-hover ${tableInstance.getCanPreviousPage() ? '' : 'opacity-50 cursor-not-allowed'}`}
-          onClick={() => tableInstance.previousPage()}
-          disabled={!tableInstance.getCanPreviousPage()}
-        >
-          &lt;
-        </button>
-        <span className="border px-2 py-1">
-          {tableInstance.options.state.pagination.pageIndex + 1}
-        </span>
-        <button
-          className={`font-bold border py-1 px-2 rounded-sm hover:bg-nav-hover ${tableInstance.getCanNextPage() ? '' : 'opacity-30 cursor-not-allowed'}`}
-          onClick={() => tableInstance.nextPage()}
-          disabled={!tableInstance.getCanNextPage()}
-        >
-          &gt;
-        </button>
-        <button
-          className={`font-bold border py-1 px-2 rounded-sm hover:bg-nav-hover ${tableInstance.getCanNextPage() ? '' : 'opacity-30 cursor-not-allowed'}`}
-          onClick={() =>
-            tableInstance.setPageIndex(tableInstance.getPageCount() - 1)
-          }
-          disabled={!tableInstance.getCanNextPage()}
-        >
-          &gt;&gt;
-        </button>
-        <select
-          value={tableInstance.options.state.pagination.pageSize}
-          onChange={(e) => tableInstance.setPageSize(e.target.value)}
-          className="border rounded-sm"
-        >
-          {[10, 25, 50].map((pageSizeEl) => {
-            return (
-              <option key={pageSizeEl} value={pageSizeEl}>
-                {pageSizeEl}
-              </option>
-            );
-          })}
-        </select>
-      </div>
+      {enablePagination && (
+        <div className="flex justify-center gap-2 mt-2">
+          <button
+            className={`font-bold border py-1 px-2 rounded-sm hover:bg-nav-hover ${tableInstance.getCanPreviousPage() ? '' : 'opacity-50 cursor-not-allowed'}`}
+            onClick={() => tableInstance.setPageIndex(0)}
+            disabled={!tableInstance.getCanPreviousPage()}
+          >
+            &lt;&lt;
+          </button>
+          <button
+            className={`font-bold border py-1 px-2 rounded-sm hover:bg-nav-hover ${tableInstance.getCanPreviousPage() ? '' : 'opacity-50 cursor-not-allowed'}`}
+            onClick={() => tableInstance.previousPage()}
+            disabled={!tableInstance.getCanPreviousPage()}
+          >
+            &lt;
+          </button>
+          <span className="border px-2 py-1">
+            {tableInstance.options.state.pagination.pageIndex + 1}
+          </span>
+          <button
+            className={`font-bold border py-1 px-2 rounded-sm hover:bg-nav-hover ${tableInstance.getCanNextPage() ? '' : 'opacity-30 cursor-not-allowed'}`}
+            onClick={() => tableInstance.nextPage()}
+            disabled={!tableInstance.getCanNextPage()}
+          >
+            &gt;
+          </button>
+          <button
+            className={`font-bold border py-1 px-2 rounded-sm hover:bg-nav-hover ${tableInstance.getCanNextPage() ? '' : 'opacity-30 cursor-not-allowed'}`}
+            onClick={() =>
+              tableInstance.setPageIndex(tableInstance.getPageCount() - 1)
+            }
+            disabled={!tableInstance.getCanNextPage()}
+          >
+            &gt;&gt;
+          </button>
+          <select
+            value={tableInstance.options.state.pagination.pageSize}
+            onChange={(e) => tableInstance.setPageSize(e.target.value)}
+            className="border rounded-sm"
+          >
+            {[10, 25, 50].map((pageSizeEl) => {
+              return (
+                <option key={pageSizeEl} value={pageSizeEl}>
+                  {pageSizeEl}
+                </option>
+              );
+            })}
+          </select>
+        </div>
+      )}
     </div>
   );
 };
