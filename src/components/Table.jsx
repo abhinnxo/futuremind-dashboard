@@ -1,17 +1,22 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import {
   flexRender,
   useReactTable,
   getCoreRowModel,
   useResizeColumns,
   getPaginationRowModel,
+  getSortedRowModel,
 } from '@tanstack/react-table';
+import { ArrowDownIcon } from '@heroicons/react/20/solid';
+import { ArrowUpIcon } from '@heroicons/react/24/outline';
 
-const Table = ({ dataJSON, columnDef, enablePagination }) => {
+const Table = ({ dataJSON, columnDef, enablePagination, enableSorting }) => {
   const finalData = useMemo(() => dataJSON, [dataJSON]);
   const finalColumnDef = useMemo(() => columnDef, [columnDef]);
+
+  const [sorting, setSorting] = useState([]);
 
   const tableInstance = useReactTable({
     columns: finalColumnDef,
@@ -19,6 +24,11 @@ const Table = ({ dataJSON, columnDef, enablePagination }) => {
     getCoreRowModel: getCoreRowModel(),
     useResizeColumns,
     getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    state: {
+      sorting,
+    },
+    onSortingChange: setSorting,
   });
 
   return (
@@ -34,12 +44,28 @@ const Table = ({ dataJSON, columnDef, enablePagination }) => {
                       <th
                         key={columnEl.id}
                         colSpan={columnEl.colSpan}
-                        className="font-semibold text-nowrap	 text-md cursor-pointer hover:bg-btn-selected"
+                        onClick={
+                          enableSorting
+                            ? () => columnEl.column.toggleSorting()
+                            : undefined
+                        }
+                        className="font-semibold text-nowrap p-2 text-md cursor-pointer hover:bg-btn-selected"
                       >
-                        {flexRender(
-                          columnEl.column.columnDef.header,
-                          columnEl.getContext(),
-                        )}
+                        <div className="flex items-center gap-2">
+                          {flexRender(
+                            columnEl.column.columnDef.header,
+                            columnEl.getContext(),
+                          )}
+                          {enableSorting &&
+                            {
+                              asc: (
+                                <ArrowDownIcon className="py-1" width="22px" />
+                              ),
+                              desc: (
+                                <ArrowUpIcon className="py-1" width="22px" />
+                              ),
+                            }[columnEl.column.getIsSorted() ?? null]}
+                        </div>
                       </th>
                     );
                   })}
