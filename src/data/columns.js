@@ -2,6 +2,11 @@
 
 export const columnDef = [
   {
+    accessorKey: 'id',
+    enableResizing: true,
+    header: 'ID',
+  },
+  {
     accessorKey: 'first_name',
     enableResizing: true,
     header: 'First Name',
