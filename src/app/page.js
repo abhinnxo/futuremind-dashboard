@@ -2,13 +2,14 @@
 
 import Table from '@/components/Table';
 import LineChart from '@/components/LineChart';
+import TopBar from '@/components/TopBar';
 import dataJSON from '../data/data.json';
 import { columnDef } from '../data/columns';
 
 export default function Home() {
   return (
-    <div className="">
-      <h1 className="font-semibold text-lg">Dashboard</h1>
+    <div>
+      <TopBar heading="Dashboard" />
       <div className="grid grid-cols-5 gap-2">
         <div className="lg:col-span-3 bg-gray-100 h-[500px] overflow-y-scroll">
           <LineChart />
