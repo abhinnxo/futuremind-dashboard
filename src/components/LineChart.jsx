@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { Line } from 'react-chartjs-2';
 import {
@@ -27,18 +29,18 @@ const LineChart = () => {
   };
 
   const options = {
+    maintainAspectRatio: false,
     plugins: {
       legend: false,
     },
     scales: {
       x: {
-        grid: {
-          display: false,
-        },
+        min: 0,
+        max: 10,
       },
       y: {
-        min: 1,
-        max: 10,
+        min: 0,
+        max: 5,
         grid: {
           borderDash: [10],
         },
@@ -46,8 +48,8 @@ const LineChart = () => {
     },
   };
   return (
-    <div>
-      <Line options={options} data={data} />
+    <div className="bg-gray-100 p-2">
+      <Line options={options} data={data} height={350} />
     </div>
   );
 };
