@@ -3,15 +3,17 @@
 import { useState } from 'react';
 import { Switch } from '@headlessui/react';
 
-function Toggle({ text }) {
+function Toggle({ text, toggleEnabled }) {
   const [enabled, setEnabled] = useState(false);
+
+  if (toggleEnabled) toggleEnabled(enabled);
 
   return (
     <span className="flex items-center gap-1">
       <span className="font-medium">{text}</span>
       <Switch
         checked={enabled}
-        onChange={setEnabled}
+        onChange={() => setEnabled(!enabled)}
         className={`${enabled ? 'bg-btn-primary' : 'bg-secondary-300'}
           relative inline-flex h-5 w-8 items-center rounded-full`}
       >
