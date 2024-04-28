@@ -1,13 +1,17 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useState } from 'react';
 import { Listbox } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import ArrowHead from '../app/assets/icons/up-arrow.svg';
 
-function SingleSelectDropdown({ text, options }) {
+function SingleSelectDropdown({ text, options, onSelectOption }) {
   const [selectedOption, setSelectedOption] = useState(options[0]);
+
+  useEffect(() => {
+    onSelectOption(selectedOption);
+  }, [selectedOption, onSelectOption]);
 
   return (
     <span className="flex gap-2 items-center w-fit max-sm:flex-wrap">
