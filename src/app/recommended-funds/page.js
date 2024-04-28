@@ -1,10 +1,79 @@
+'use client';
+
+import { useState } from 'react';
 import Table from '@/components/Table';
 import Button from '@/components/Button';
 import SingleSelectDropdown from '@/components/SingleSelectDropdown';
 import TopBar from '@/components/TopBar';
 import { PlusIcon } from '@heroicons/react/24/outline';
+import fetchClientData from '@/services/getData';
+import { useQuery } from '@tanstack/react-query';
+
+const query = `query GetFunds {
+  getFunds {
+    status
+    message
+    data {
+      id
+      name
+      type
+      category
+      rtaCode
+      isActive
+      recommended {
+        rank
+      }
+    }
+  }
+}
+`;
+
+const columnDef = [
+  {
+    accessorKey: 'name',
+    header: 'Name',
+  },
+  {
+    accessorKey: 'type',
+    header: 'Type',
+  },
+  {
+    accessorKey: 'category',
+    header: 'Category',
+  },
+  {
+    accessorKey: 'rtaCode',
+    header: 'RTA Code',
+  },
+  {
+    accessorKey: 'isActive',
+    header: 'Is Active',
+  },
+  {
+    accessorKey: 'recommended.rank',
+    header: 'Rank',
+  },
+];
 
 export default function RecommendedFunds() {
+  const [selectOption, setSelectOption] = useState('Show All');
+
+  const handleSelectOption = (option) => {
+    setSelectOption(option.name);
+  };
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ['abc'],
+    queryFn: () => fetchClientData(query),
+  });
+
+  if (isLoading) {
+    return <div>Loading....</div>;
+  }
+  if (error) {
+    return <div className="text-red-500">Something went Wrong...</div>;
+  }
+
   return (
     <>
       <TopBar heading="Recommended Funds">
@@ -17,6 +86,7 @@ export default function RecommendedFunds() {
             { id: 3, name: 'Equity' },
             { id: 4, name: 'Hybrid' },
           ]}
+          onSelectOption={handleSelectOption}
         />
         <Button
           text="Add"
@@ -24,12 +94,14 @@ export default function RecommendedFunds() {
         />
       </TopBar>
       <Table
-        // dataJSON={}
-        // columnDef={}
+        dataJSON={data.getFunds.data}
+        columnDef={columnDef}
         enablePagination={true}
         enableSorting={true}
         rowsToShow={22}
         customClasses={'h-[900px]'}
+        selectedOption={selectOption}
+        route="recommended_funds"
       />
     </>
   );
