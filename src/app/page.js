@@ -1,44 +1,30 @@
-'use client';
-
 import Table from '@/components/Table';
 import LineChart from '@/components/LineChart';
 import TopBar from '@/components/TopBar';
-import dataJSON from '../data/data.json';
-import { columnDef } from '../data/columns';
 
 export default function Home() {
   return (
-    <div>
+    <div className="flex flex-col md:h-screen">
       <TopBar heading="Dashboard" />
-      <div className="grid grid-cols-5 gap-2">
-        <div className="lg:col-span-3 bg-gray-100 h-[500px] overflow-y-scroll">
-          <LineChart />
+      <div className="flex flex-col gap-2">
+        <div className="md:flex h-1/4 gap-2">
+          <div className="w-full md:w-3/4">
+            <LineChart />
+          </div>
+          <div className="w-full md:w-1/3">
+            <Table
+              // dataJSON={}
+              // columnDef={}
+              customClasses="h-[366px]"
+            />
+          </div>
         </div>
-        <div className="lg:col-span-2 h-[500px] overflow-y-scroll">
+        <div className="md:h-2/3 md:mt-24">
           <Table
-            dataJSON={dataJSON}
-            columnDef={[
-              {
-                accessorKey: 'id',
-                enableResizing: true,
-                header: 'ID',
-                enableSorting: false,
-              },
-              {
-                accessorKey: 'first_name',
-                enableResizing: true,
-                header: 'First Name',
-              },
-            ]}
-            enablePagination={false}
-          />
-        </div>
-        <div className="lg:col-span-5">
-          <Table
-            dataJSON={dataJSON}
-            columnDef={columnDef}
-            enablePagination={true}
+            // dataJSON={}
+            // columnDef={}
             enableSorting={true}
+            customClasses="h-[650px]"
           />
         </div>
       </div>
