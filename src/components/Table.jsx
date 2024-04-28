@@ -10,12 +10,22 @@ import {
 import { ArrowDownIcon } from '@heroicons/react/20/solid';
 import { ArrowUpIcon } from '@heroicons/react/24/outline';
 
-const Table = ({ dataJSON, columnDef, enableSorting }) => {
+const Table = ({
+  dataJSON,
+  columnDef,
+  enableSorting,
+  customClasses,
+  rowsToShow,
+}) => {
   const finalData = useMemo(() => dataJSON, [dataJSON]);
   const finalColumnDef = useMemo(() => columnDef, [columnDef]);
 
   const [sorting, setSorting] = useState([]);
-  const [visibleRows, setVisibleRows] = useState(15);
+  const [visibleRows, setVisibleRows] = useState(rowsToShow || 15);
+
+  const emailColumnIndex = finalColumnDef.findIndex(
+    (column) => column.accessorKey === 'email',
+  );
 
   const tableInstance = useReactTable({
     columns: finalColumnDef,
@@ -57,12 +67,11 @@ const Table = ({ dataJSON, columnDef, enableSorting }) => {
 
   return (
     <div
-      className="bg-white border p-2 rounded-md"
-      style={{ height: '500px', overflowY: 'auto' }}
+      className={`${customClasses} bg-white border p-2 rounded-md overflow-y-auto`}
       ref={tableRef}
     >
       <div>
-        <table>
+        <table className="w-full table-auto">
           <thead>
             {tableInstance.getHeaderGroups().map((headerEl) => {
               return (
@@ -77,7 +86,7 @@ const Table = ({ dataJSON, columnDef, enableSorting }) => {
                             ? () => columnEl.column.toggleSorting()
                             : undefined
                         }
-                        className="font-semibold text-nowrap p-2 text-md cursor-pointer hover:bg-btn-selected"
+                        className="font-semibold text-nowrap px-4 py-2 text-md cursor-pointer hover:bg-secondary-300"
                       >
                         <div className="flex items-center gap-2">
                           {flexRender(
@@ -109,11 +118,17 @@ const Table = ({ dataJSON, columnDef, enableSorting }) => {
                 return (
                   <tr
                     key={rowEl.id}
-                    className="border-b-2 py-4 hover:bg-btn-selected text-nowrap"
+                    className="border-b-2 hover:bg-btn-selected text-nowrap"
                   >
-                    {rowEl.getVisibleCells().map((cellEl) => {
+                    {rowEl.getVisibleCells().map((cellEl, index) => {
+                      const isEmailColumn = index === emailColumnIndex;
                       return (
-                        <td key={cellEl.id} className="py-2">
+                        <td
+                          key={cellEl.id}
+                          className={`p-2 ${
+                            isEmailColumn ? 'text-blue-500' : ''
+                          }`}
+                        >
                           {flexRender(
                             cellEl.column.columnDef.cell,
                             cellEl.getContext(),
