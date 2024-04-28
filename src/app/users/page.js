@@ -4,8 +4,6 @@ import Table from '@/components/Table';
 import Toggle from '@/components/Toggle';
 import TopBar from '@/components/TopBar';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
-import dataJSON from '../../data/data.json';
-import { columnDef } from '../../data/columns';
 
 export default function Users() {
   return (
@@ -28,12 +26,13 @@ export default function Users() {
           }
         />
       </TopBar>
-
       <Table
-        dataJSON={dataJSON}
-        columnDef={columnDef}
+        // dataJSON={}
+        // columnDef={}
         enablePagination={true}
         enableSorting={true}
+        rowsToShow={22}
+        customClasses={'h-[900px]'}
       />
     </>
   );

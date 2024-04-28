@@ -3,8 +3,6 @@ import Button from '@/components/Button';
 import SingleSelectDropdown from '@/components/SingleSelectDropdown';
 import TopBar from '@/components/TopBar';
 import { PlusIcon } from '@heroicons/react/24/outline';
-import dataJSON from '../../data/data.json';
-import { columnDef } from '../../data/columns';
 
 export default function RecommendedFunds() {
   return (
@@ -13,13 +11,11 @@ export default function RecommendedFunds() {
         <SingleSelectDropdown
           text="Fund Types"
           options={[
+            { id: 0, name: 'Show All' },
             { id: 1, name: 'Debt' },
             { id: 2, name: 'Open Ended' },
-            { id: 4, name: 'DEBT' },
-            { id: 5, name: 'Equity' },
-            { id: 6, name: 'null' },
-            { id: 7, name: 'Hybrid' },
-            { id: 8, name: 'test' },
+            { id: 3, name: 'Equity' },
+            { id: 4, name: 'Hybrid' },
           ]}
         />
         <Button
@@ -28,10 +24,12 @@ export default function RecommendedFunds() {
         />
       </TopBar>
       <Table
-        dataJSON={dataJSON}
-        columnDef={columnDef}
+        // dataJSON={}
+        // columnDef={}
         enablePagination={true}
         enableSorting={true}
+        rowsToShow={22}
+        customClasses={'h-[900px]'}
       />
     </>
   );

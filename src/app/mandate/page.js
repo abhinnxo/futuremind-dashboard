@@ -2,8 +2,6 @@ import Table from '@/components/Table';
 import SearchBar from '@/components/SearchBar';
 import Toggle from '@/components/Toggle';
 import TopBar from '@/components/TopBar';
-import dataJSON from '../../data/data.json';
-import { columnDef } from '../../data/columns';
 
 export default function Mandate() {
   return (
@@ -13,10 +11,12 @@ export default function Mandate() {
         <SearchBar text="Search" placeholder="Search Client Name" />
       </TopBar>
       <Table
-        dataJSON={dataJSON}
-        columnDef={columnDef}
+        // dataJSON={}
+        // columnDef={}
         enablePagination={true}
         enableSorting={true}
+        rowsToShow={22}
+        customClasses={'h-[900px]'}
       />
     </>
   );
