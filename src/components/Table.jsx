@@ -8,7 +8,8 @@ import {
   getSortedRowModel,
 } from '@tanstack/react-table';
 import { ArrowDownIcon } from '@heroicons/react/20/solid';
-import { ArrowUpIcon } from '@heroicons/react/24/outline';
+import { ArrowUpIcon, CheckIcon } from '@heroicons/react/24/outline';
+import Badge from './Badge';
 
 const Table = ({
   dataJSON,
@@ -16,6 +17,10 @@ const Table = ({
   enableSorting,
   customClasses,
   rowsToShow,
+  filterWord,
+  toggleState,
+  selectedOption,
+  route,
 }) => {
   const finalData = useMemo(() => dataJSON, [dataJSON]);
   const finalColumnDef = useMemo(() => columnDef, [columnDef]);
@@ -24,7 +29,16 @@ const Table = ({
   const [visibleRows, setVisibleRows] = useState(rowsToShow || 15);
 
   const emailColumnIndex = finalColumnDef.findIndex(
-    (column) => column.accessorKey === 'email',
+    (column) => column.accessorKey === 'application.email',
+  );
+  const currStepColumnIndex = finalColumnDef.findIndex(
+    (column) => column.accessorKey === 'application.currentStep',
+  );
+  const kycVerifiedColumnIndex = finalColumnDef.findIndex(
+    (column) => column.accessorKey === 'application.kycVerified',
+  );
+  const planColumnIndex = finalColumnDef.findIndex(
+    (column) => column.accessorKey === 'application.plan',
   );
 
   const tableInstance = useReactTable({
@@ -65,6 +79,70 @@ const Table = ({
     };
   }, []);
 
+  let filter = '';
+
+  // Route based filters
+  if (route === 'users') {
+    filter = tableInstance
+      .getRowModel()
+      .rows.slice(0, visibleRows)
+      .filter((rowEl) => {
+        const panCardNumber =
+          rowEl.original &&
+          rowEl.original.pancard &&
+          rowEl.original.pancard.panCardNumber;
+
+        return (
+          (!filterWord ||
+            (panCardNumber &&
+              panCardNumber
+                .toUpperCase()
+                .includes(filterWord.toUpperCase()))) &&
+          (!toggleState || (rowEl.original && rowEl.original.active))
+        );
+      });
+  } else if (route === 'recommended_funds') {
+    if (selectedOption === 'Show All') {
+      filter = tableInstance.getRowModel().rows.slice(0, visibleRows);
+    } else {
+      filter = tableInstance
+        .getRowModel()
+        .rows.slice(0, visibleRows)
+        .filter((rowEl) => {
+          const filterRows = rowEl.original && rowEl.original.category;
+          return filterRows.includes(selectedOption.toUpperCase());
+        });
+    }
+  } else if (route === 'subscriptions') {
+    filter = tableInstance
+      .getRowModel()
+      .rows.slice(0, visibleRows)
+      .filter((rowEl) => {
+        const filterRows = rowEl.original && rowEl.original.name;
+
+        return (
+          filterRows &&
+          filterRows.toUpperCase().includes(filterWord.toUpperCase())
+        );
+      });
+  } else if (route === 'investments') {
+    // filter = tableInstance.getRowModel().rows[0];
+
+    // console.log(filter);
+    filter = tableInstance
+      .getRowModel()
+      .rows.slice(0, visibleRows)
+      .filter((rowEl) => {
+        const filterRows = rowEl.original && rowEl.original.schemeName;
+        return (
+          filterRows &&
+          filterRows.toUpperCase().includes(filterWord.toUpperCase())
+        );
+      });
+  } else filter = tableInstance.getRowModel().rows.slice(0, visibleRows);
+
+  // console.log(tableInstance.getRowModel().rows);
+
   return (
     <div
       className={`${customClasses} bg-white border p-2 rounded-md overflow-y-auto`}
@@ -95,12 +173,8 @@ const Table = ({
                           )}
                           {enableSorting &&
                             {
-                              asc: (
-                                <ArrowDownIcon className="py-1" width="22px" />
-                              ),
-                              desc: (
-                                <ArrowUpIcon className="py-1" width="22px" />
-                              ),
+                              asc: <ArrowDownIcon width="18px" />,
+                              desc: <ArrowUpIcon width="18px" />,
                             }[columnEl.column.getIsSorted() ?? null]}
                         </div>
                       </th>
@@ -111,34 +185,79 @@ const Table = ({
             })}
           </thead>
           <tbody>
-            {tableInstance
-              .getRowModel()
-              .rows.slice(0, visibleRows)
-              .map((rowEl) => {
-                return (
-                  <tr
-                    key={rowEl.id}
-                    className="border-b-2 hover:bg-btn-selected text-nowrap"
-                  >
-                    {rowEl.getVisibleCells().map((cellEl, index) => {
-                      const isEmailColumn = index === emailColumnIndex;
+            {filter.map((rowEl) => {
+              // console.log(tableInstance.getRowModel().rows[1].origi);
+              return (
+                <tr
+                  key={rowEl.id}
+                  className="border-b-2 hover:bg-btn-selected text-nowrap"
+                >
+                  {rowEl.getVisibleCells().map((cellEl, index) => {
+                    const isEmailColumn = index === emailColumnIndex;
+                    const isCurrStepColumn = index === currStepColumnIndex;
+                    const isKycVerifiedColumn =
+                      index === kycVerifiedColumnIndex;
+                    const isPlanColumn = index === planColumnIndex;
+
+                    // Conditionally render the Badge component
+                    const badgeText = flexRender(
+                      cellEl.column.columnDef.cell,
+                      cellEl.getContext(),
+                    );
+
+                    if (isEmailColumn) {
                       return (
-                        <td
-                          key={cellEl.id}
-                          className={`p-2 ${
-                            isEmailColumn ? 'text-blue-500' : ''
-                          }`}
-                        >
+                        <td key={cellEl.id} className="p-2 text-blue-500">
                           {flexRender(
                             cellEl.column.columnDef.cell,
                             cellEl.getContext(),
                           )}
                         </td>
                       );
-                    })}
-                  </tr>
-                );
-              })}
+                    }
+
+                    if (isCurrStepColumn) {
+                      if (cellEl.getValue()) {
+                        return (
+                          <td key={cellEl.id} className="p-2 text-blue-500">
+                            <Badge text={badgeText} type="primary" />
+                          </td>
+                        );
+                      }
+                    }
+
+                    if (isPlanColumn) {
+                      if (cellEl.getValue()) {
+                        return (
+                          <td key={cellEl.id} className="p-2 text-blue-500">
+                            <Badge text={badgeText} type="primary" />
+                          </td>
+                        );
+                      }
+                    }
+
+                    if (isKycVerifiedColumn) {
+                      if (cellEl.getValue()) {
+                        return (
+                          <td key={cellEl.id} className="p-2 text-blue-700">
+                            <CheckIcon width="22px" />
+                          </td>
+                        );
+                      }
+                    }
+
+                    return (
+                      <td key={cellEl.id} className="p-2">
+                        {flexRender(
+                          cellEl.column.columnDef.cell,
+                          cellEl.getContext(),
+                        )}
+                      </td>
+                    );
+                  })}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>
