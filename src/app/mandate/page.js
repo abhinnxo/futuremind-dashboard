@@ -6,8 +6,9 @@ import Toggle from '@/components/Toggle';
 import TopBar from '@/components/TopBar';
 import fetchClientData from '@/services/getData';
 import { useQuery } from '@tanstack/react-query';
+import { gql } from 'graphql-request';
 
-const query = `query GetMandates {
+const query = gql`GetMandates {
   getMandates {
     status
     message

@@ -8,8 +8,9 @@ import TopBar from '@/components/TopBar';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import fetchClientData from '@/services/getData';
 import { useQuery } from '@tanstack/react-query';
+import { gql } from 'graphql-request';
 
-const query = `query GetClients {
+const query = gql`GetClients {
  getUsers {
     status
     message

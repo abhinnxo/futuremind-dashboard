@@ -7,32 +7,35 @@ import Toggle from '@/components/Toggle';
 import TopBar from '@/components/TopBar';
 import fetchClientData from '@/services/getData';
 import { useQuery } from '@tanstack/react-query';
+import { gql } from 'graphql-request';
 
-const query = `query {
-  getInvestments {
-    status
-    message
-    data {
-      current_page
-      last_page
-      per_page
-      lastEvaluatedKey
-      investments {
-        id
-        rtaCode
-        schemeName
-        folio
-        units
-        status
-        investmentAmount
-        investmentValue
-        nature
-        classification
-        amc
+const query = gql`
+  {
+    getInvestments {
+      status
+      message
+      data {
+        current_page
+        last_page
+        per_page
+        lastEvaluatedKey
+        investments {
+          id
+          rtaCode
+          schemeName
+          folio
+          units
+          status
+          investmentAmount
+          investmentValue
+          nature
+          classification
+          amc
+        }
       }
     }
   }
-}`;
+`;
 
 const columnDef = [
   {

@@ -5,33 +5,34 @@ import LineChart from '@/components/LineChart';
 import TopBar from '@/components/TopBar';
 import fetchClientData from '@/services/getData';
 import { useQuery } from '@tanstack/react-query';
+import { gql } from 'graphql-request';
 
-const query = `
-    query {
-      getUsers {
-        data {
-          name
-          pancard {
-            panCardNumber
+const query = gql`
+  {
+    getUsers {
+      data {
+        name
+        pancard {
+          panCardNumber
+        }
+        application {
+          email
+          mobile
+          kycVerified
+          bank {
+            verified
           }
-          application {
-            email
-            mobile
-            kycVerified
-            bank {
-              verified
-            }
-            completed
-            currentStep
+          completed
+          currentStep
           mandate {
             type
           }
-          plan 
-          }
+          plan
         }
       }
     }
-  `;
+  }
+`;
 
 const columnDef = [
   {

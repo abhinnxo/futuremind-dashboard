@@ -8,8 +8,9 @@ import TopBar from '@/components/TopBar';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import fetchClientData from '@/services/getData';
 import { useQuery } from '@tanstack/react-query';
+import { gql } from 'graphql-request';
 
-const query = `query GetFunds {
+const query = gql`GetFunds {
   getFunds {
     status
     message
@@ -93,16 +94,18 @@ export default function RecommendedFunds() {
           image={<PlusIcon className="h-5 w-5 text-white" aria-hidden="true" />}
         />
       </TopBar>
-      <Table
-        dataJSON={data.getFunds.data}
-        columnDef={columnDef}
-        enablePagination={true}
-        enableSorting={true}
-        rowsToShow={22}
-        customClasses={'h-[900px]'}
-        selectedOption={selectOption}
-        route="recommended_funds"
-      />
+      {!isLoading && (
+        <Table
+          dataJSON={data.getFunds.data}
+          columnDef={columnDef}
+          enablePagination={true}
+          enableSorting={true}
+          rowsToShow={22}
+          customClasses={'h-[900px]'}
+          selectedOption={selectOption}
+          route="recommended_funds"
+        />
+      )}
     </>
   );
 }

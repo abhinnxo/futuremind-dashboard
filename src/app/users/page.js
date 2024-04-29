@@ -9,41 +9,46 @@ import TopBar from '@/components/TopBar';
 import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import fetchClientData from '@/services/getData';
 import { useQuery } from '@tanstack/react-query';
+import { gql } from 'graphql-request';
 
-const query = `query {
-  getUsers {
-    status
-    message
-    data {
-      name
-      clientCode
-      pancard {
-        panCardNumber
-      }
-      active
-      application {
-        plan
-        basicDetail {
-          annualIncome
+const query = gql`
+  {
+    getUsers {
+      status
+      message
+      data {
+        name
+        clientCode
+        pancard {
+          panCardNumber
+          gender
+          dateOfBirth
         }
-        mobile
-        email
-        nominee {
-          name
-        }
-        currentStep
-        kycVerified
-        agreement {
-          eSigned
-        }
-        documents {
-          name
-          type
+        active
+        application {
+          plan
+          basicDetail {
+            annualIncome
+          }
+          mobile
+          email
+          nominee {
+            name
+          }
+          currentStep
+          kycVerified
+          agreement {
+            eSigned
+          }
+          documents {
+            name
+            type
+          }
         }
       }
     }
   }
-}`;
+`;
 
 const columnDef = [
   {
@@ -71,11 +76,11 @@ const columnDef = [
     header: 'Income',
   },
   {
-    accessorKey: 'application.basicDetail.dateOfBirth',
+    accessorKey: 'pancard.dateOfBirth',
     header: 'Date of Birth',
   },
   {
-    accessorKey: 'application.basicDetail.gender',
+    accessorKey: 'pancard.gender',
     header: 'Gender',
   },
   {
@@ -124,6 +129,7 @@ export default function Users() {
   const receiveDataFromChild = (data) => {
     setFilterWord(data);
   };
+
   const handleToggleChange = (enabled) => {
     setToggleState(enabled);
   };
