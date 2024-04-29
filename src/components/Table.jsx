@@ -126,22 +126,32 @@ const Table = ({
         );
       });
   } else if (route === 'investments') {
-    // filter = tableInstance.getRowModel().rows[0];
-
-    // console.log(filter);
-    filter = tableInstance
-      .getRowModel()
-      .rows.slice(0, visibleRows)
-      .filter((rowEl) => {
-        const filterRows = rowEl.original && rowEl.original.schemeName;
-        return (
-          filterRows &&
-          filterRows.toUpperCase().includes(filterWord.toUpperCase())
-        );
-      });
+    if (toggleState) {
+      filter = tableInstance
+        .getRowModel()
+        .rows.slice(0, visibleRows)
+        .filter((rowEl) => {
+          const filterRows = rowEl.original && rowEl.original.schemeName;
+          const status = rowEl.original && rowEl.original.status;
+          return (
+            status === 'ACTIVE' && // Only show rows with 'ACTIVE' status
+            filterRows &&
+            filterRows.toUpperCase().includes(filterWord.toUpperCase())
+          );
+        });
+    } else {
+      filter = tableInstance
+        .getRowModel()
+        .rows.slice(0, visibleRows)
+        .filter((rowEl) => {
+          const filterRows = rowEl.original && rowEl.original.schemeName;
+          return (
+            filterRows &&
+            filterRows.toUpperCase().includes(filterWord.toUpperCase())
+          );
+        });
+    }
   } else filter = tableInstance.getRowModel().rows.slice(0, visibleRows);
-
-  // console.log(tableInstance.getRowModel().rows);
 
   return (
     <div
@@ -186,7 +196,6 @@ const Table = ({
           </thead>
           <tbody>
             {filter.map((rowEl) => {
-              // console.log(tableInstance.getRowModel().rows[1].origi);
               return (
                 <tr
                   key={rowEl.id}

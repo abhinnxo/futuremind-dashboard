@@ -83,9 +83,13 @@ const columnDef = [
 
 export default function Investments() {
   const [filterWord, setFilterWord] = useState('');
+  const [toggleState, setToggleState] = useState(false);
 
   const receiveDataFromChild = (data) => {
     setFilterWord(data);
+  };
+  const handleToggleChange = (enabled) => {
+    setToggleState(enabled);
   };
 
   const { data, isLoading, error } = useQuery({
@@ -103,7 +107,7 @@ export default function Investments() {
   return (
     <>
       <TopBar heading="Investments">
-        <Toggle text="Show Inactive" />
+        <Toggle text="Show Inactive" toggleEnabled={handleToggleChange} />
         <SearchBar
           text="Search"
           placeholder="Search Scheme Name"
@@ -118,6 +122,7 @@ export default function Investments() {
         rowsToShow={22}
         customClasses={'h-[900px]'}
         filterWord={filterWord}
+        toggleState={toggleState}
         route="investments"
       />
     </>
