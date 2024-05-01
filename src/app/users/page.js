@@ -10,40 +10,47 @@ import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import fetchClientData from '@/services/getData';
 import { useQuery } from '@tanstack/react-query';
 import { gql } from 'graphql-request';
+import Badge from '@/components/Badge';
+import Modal from '@/components/Modal';
 
 const query = gql`
   {
     getUsers {
-      status
-      message
       data {
         name
         clientCode
+        joiningDate
+        subscription {
+          plan
+          status
+        }
         pancard {
           panCardNumber
-          gender
-          dateOfBirth
+          kycStatus
         }
-        active
-        application {
-          plan
-          basicDetail {
-            annualIncome
-          }
+        riskProfile
+        pancard {
+          dateOfBirth
+          gender
+        }
+        contactDetails {
           mobile
           email
-          nominee {
-            name
-          }
-          currentStep
-          kycVerified
-          agreement {
-            eSigned
-          }
-          documents {
-            name
-            type
-          }
+        }
+        primaryBank {
+          name
+          branch
+          accountNumber
+          ifsc
+        }
+        nominee {
+          name
+        }
+        address {
+          completeAddress
+        }
+        basicDetail {
+          annualIncome
         }
       }
     }
@@ -52,73 +59,104 @@ const query = gql`
 
 const columnDef = [
   {
-    accessorKey: 'name',
+    accessorFn: (row) => row.name,
     header: 'Name',
   },
   {
-    accessorKey: 'clientCode',
+    accessorFn: (row) => row.clientCode,
     header: 'Client Code',
   },
   {
-    accessorKey: 'pancard.panCardNumber',
+    accessorFn: (row) => row.joiningDate,
+    header: 'Joining Date',
+  },
+  {
+    accessorFn: (row) => row.subscription?.plan,
+    header: 'Plan',
+    cell: (props) => <Badge text={props.getValue()} type={props.getValue()} />,
+  },
+  {
+    accessorFn: (row) => row.pancard?.panCardNumber,
     header: 'PAN Card Number',
   },
   {
-    accessorKey: 'active',
-    header: 'Active',
+    accessorFn: (row) => row.riskProfile,
+    header: 'Risk Profile',
+    cell: (props) =>
+      props.getValue() === null ? (
+        'null'
+      ) : (
+        <Badge text={props.getValue()} type="normal" />
+      ),
   },
   {
-    accessorKey: 'application.plan',
-    header: 'Plan',
-  },
-  {
-    accessorKey: 'application.basicDetail.annualIncome',
-    header: 'Income',
-  },
-  {
-    accessorKey: 'pancard.dateOfBirth',
+    accessorFn: (row) => row.pancard?.dateOfBirth,
     header: 'Date of Birth',
   },
   {
-    accessorKey: 'pancard.gender',
+    accessorFn: (row) => row.pancard?.gender,
     header: 'Gender',
   },
   {
-    accessorKey: 'application.mobile',
+    accessorFn: (row) => row.contactDetails?.mobile,
     header: 'Mobile',
   },
   {
-    accessorKey: 'application.email',
+    accessorFn: (row) => row.contactDetails?.email,
     header: 'Email',
+    cell: (props) => <span className="text-blue-600">{props.getValue()}</span>,
   },
   {
-    accessorKey: 'application.nominee.name',
+    accessorFn: (row) => row.primaryBank,
+    header: 'Bank',
+    cell: (props) => (
+      <Modal
+        comp={<span className="text-blue-600 underline">Show Details</span>}
+        heading="Bank Details"
+        body={
+          <>
+            <div>
+              <strong>Name:</strong> {props.getValue()?.name}
+            </div>
+            <div>
+              <strong>A/C No.:</strong> {props.getValue()?.accountNumber}
+            </div>
+            <div>
+              <strong>IFSC Code:</strong> {props.getValue()?.ifsc}
+            </div>
+            <div>
+              <strong>Branch Name:</strong> {props.getValue()?.branch}
+            </div>
+          </>
+        }
+      />
+    ),
+  },
+  {
+    accessorFn: (row) => row.nominee?.name,
     header: 'Nominee',
   },
   {
-    accessorKey: 'application.currentStep',
-    header: 'Current Step',
-  },
-  {
-    accessorKey: 'application.kycVerified',
-    header: 'KYC Status',
-  },
-  {
-    accessorKey: 'application.pancard.kycStatus',
-    header: 'Verified',
-  },
-  {
-    accessorKey: 'application.documents',
-    header: 'AOf uploaded',
-    cell: (data) => (data.length > 0 ? 'Yes' : 'No'),
-  },
-  {
-    accessorKey: 'application.address.completeAddress',
+    accessorFn: (row) => row.address?.completeAddress,
     header: 'Address',
   },
   {
-    accessorKey: 'application.primaryBank.name',
-    header: 'Bank',
+    accessorFn: (row) => row.basicDetail?.annualIncome,
+    header: 'Income',
+  },
+  {
+    accessorFn: (row) => row.subscription?.status,
+    header: 'Status',
+    cell: (props) =>
+      props.getValue() === 'ACTIVE' ? (
+        <span className="text-green-600">{props.getValue()}</span>
+      ) : (
+        <span className="text-red-600">{props.getValue()}</span>
+      ),
+  },
+  {
+    accessorFn: (row) => row.pancard?.kycStatus,
+    header: 'KYC Status',
   },
 ];
 
