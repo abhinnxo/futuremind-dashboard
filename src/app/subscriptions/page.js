@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import Table from '@/components/Table';
 import Button from '@/components/Button';
 import SearchBar from '@/components/SearchBar';
@@ -10,27 +9,29 @@ import fetchClientData from '@/services/getData';
 import { useQuery } from '@tanstack/react-query';
 import { gql } from 'graphql-request';
 
-const query = gql`GetClients {
- getUsers {
-    status
-    message
-    data {
-      id
-      name
-      clientCode
-      subscription {
-        plan
-        credits
-        status
-        mandate {
-          startDate
-          endDate
-          mandateStatus
+const query = gql`
+  {
+    getUsers {
+      status
+      message
+      data {
+        id
+        name
+        clientCode
+        subscription {
+          plan
+          credits
+          status
+          mandate {
+            startDate
+            endDate
+            mandateStatus
+          }
         }
       }
     }
   }
-}`;
+`;
 
 const columnDef = [
   {
@@ -84,12 +85,6 @@ const columnDef = [
 ];
 
 export default function Subscriptions() {
-  const [filterWord, setFilterWord] = useState('');
-
-  const receiveDataFromChild = (data) => {
-    setFilterWord(data);
-  };
-
   const { data, isLoading, error } = useQuery({
     queryKey: ['abc'],
     queryFn: () => fetchClientData(query),
@@ -101,34 +96,28 @@ export default function Subscriptions() {
   if (error) {
     return <div className="text-red-500">Something went Wrong...</div>;
   }
-  return (
-    <>
-      <TopBar heading="Subscriptions">
-        <SearchBar
-          text="Search"
-          placeholder="Search Client Name"
-          sendDataToParent={receiveDataFromChild}
+  if (data.getUsers) {
+    return (
+      <>
+        <TopBar heading="Subscriptions">
+          <SearchBar text="Search" placeholder="Search Client Name" />
+          <Button
+            text="Export"
+            image={
+              <ArrowDownTrayIcon
+                className="h-5 w-5 text-white"
+                aria-hidden="true"
+              />
+            }
+          />
+        </TopBar>
+        <Table
+          dataJSON={data.getUsers.data}
+          columnDef={columnDef}
+          customClasses={'h-[900px]'}
         />
-        <Button
-          text="Export"
-          image={
-            <ArrowDownTrayIcon
-              className="h-5 w-5 text-white"
-              aria-hidden="true"
-            />
-          }
-        />
-      </TopBar>
-      <Table
-        dataJSON={data.getUsers.data}
-        columnDef={columnDef}
-        enablePagination={true}
-        enableSorting={true}
-        rowsToShow={22}
-        customClasses={'h-[900px]'}
-        filterWord={filterWord}
-        route="subscriptions"
-      />
-    </>
-  );
+      </>
+    );
+  }
+  return <div>Loading....</div>;
 }

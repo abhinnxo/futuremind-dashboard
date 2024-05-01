@@ -92,42 +92,42 @@ export default function Home() {
     return <div className="text-red-500">Something went Wrong...</div>;
   }
 
-  return (
-    <div className="flex flex-col md:h-screen">
-      <TopBar heading="Dashboard" />
-      <div className="flex flex-col gap-2">
-        <div className="md:flex h-1/4 gap-2">
-          <div className="w-full md:w-3/4">
-            <LineChart />
+  if (data.getUsers) {
+    return (
+      <div className="flex flex-col md:h-screen">
+        <TopBar heading="Dashboard" />
+        <div className="flex flex-col gap-2">
+          <div className="md:flex h-1/4 gap-2">
+            <div className="w-full md:w-3/4">
+              <LineChart />
+            </div>
+            <div className="w-full md:w-1/3">
+              <Table
+                dataJSON={data.getUsers.data}
+                columnDef={[
+                  {
+                    accessorKey: 'application.currentStep',
+                    header: 'Current Step',
+                  },
+                  {
+                    accessorKey: '',
+                    header: 'Users',
+                  },
+                ]}
+                customClasses="h-[366px]"
+              />
+            </div>
           </div>
-          <div className="w-full md:w-1/3">
+          <div className="md:h-2/3 md:mt-24">
             <Table
               dataJSON={data.getUsers.data}
-              columnDef={[
-                {
-                  accessorKey: 'application.currentStep',
-                  header: 'Current Step',
-                },
-                {
-                  accessorKey: '',
-                  header: 'Users',
-                },
-              ]}
-              customClasses="h-[366px]"
-              route="dashboard"
+              columnDef={columnDef}
+              customClasses="h-[650px]"
             />
           </div>
         </div>
-        <div className="md:h-2/3 md:mt-24">
-          <Table
-            dataJSON={data.getUsers.data}
-            columnDef={columnDef}
-            enableSorting={true}
-            customClasses="h-[650px]"
-            route="dashboard"
-          />
-        </div>
       </div>
-    </div>
-  );
+    );
+  }
+  return <div>Loading....</div>;
 }

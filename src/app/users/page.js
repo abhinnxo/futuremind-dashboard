@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Button from '@/components/Button';
 import SearchBar from '@/components/SearchBar';
 import Table from '@/components/Table';
@@ -123,17 +123,6 @@ const columnDef = [
 ];
 
 export default function Users() {
-  const [filterWord, setFilterWord] = useState('');
-  const [toggleState, setToggleState] = useState(false);
-
-  const receiveDataFromChild = (data) => {
-    setFilterWord(data);
-  };
-
-  const handleToggleChange = (enabled) => {
-    setToggleState(enabled);
-  };
-
   const { data, isLoading, error } = useQuery({
     queryKey: ['abc'],
     queryFn: () => fetchClientData(query),
@@ -145,42 +134,35 @@ export default function Users() {
   if (error) {
     return <div className="text-red-500">Something went Wrong...</div>;
   }
-  return (
-    <>
-      <TopBar heading="Users">
-        <Toggle
-          key="toggle"
-          text="Show Active"
-          toggleEnabled={handleToggleChange}
+
+  if (data.getUsers) {
+    return (
+      <>
+        <TopBar heading="Users">
+          <Toggle key="toggle" text="Show Active" />
+          <SearchBar
+            key="searchbar"
+            text="Search"
+            placeholder="Search PAN Number"
+          />
+          <Button
+            key="button"
+            text="Export"
+            image={
+              <ArrowDownTrayIcon
+                className="h-5 w-5 text-white"
+                aria-hidden="true"
+              />
+            }
+          />
+        </TopBar>
+        <Table
+          dataJSON={data.getUsers.data}
+          columnDef={columnDef}
+          customClasses={'h-[900px]'}
         />
-        <SearchBar
-          key="searchbar"
-          text="Search"
-          placeholder="Search PAN Number"
-          sendDataToParent={receiveDataFromChild}
-        />
-        <Button
-          key="button"
-          text="Export"
-          image={
-            <ArrowDownTrayIcon
-              className="h-5 w-5 text-white"
-              aria-hidden="true"
-            />
-          }
-        />
-      </TopBar>
-      <Table
-        dataJSON={data.getUsers?.data}
-        columnDef={columnDef}
-        enablePagination={true}
-        enableSorting={true}
-        rowsToShow={22}
-        customClasses={'h-[900px]'}
-        filterWord={filterWord}
-        toggleState={toggleState}
-        route="users"
-      />
-    </>
-  );
+      </>
+    );
+  }
+  return <div>Loading....</div>;
 }

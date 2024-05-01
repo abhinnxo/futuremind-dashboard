@@ -8,23 +8,25 @@ import fetchClientData from '@/services/getData';
 import { useQuery } from '@tanstack/react-query';
 import { gql } from 'graphql-request';
 
-const query = gql`GetMandates {
-  getMandates {
-    status
-    message
-    data {
-      id
-      amount
-      startDate
-      endDate
-      mandateStatus
-      uploadDate
-      registrationDate
-      approvedDate
-      UMRN
+const query = gql`
+  {
+    getMandates {
+      status
+      message
+      data {
+        id
+        amount
+        startDate
+        endDate
+        mandateStatus
+        uploadDate
+        registrationDate
+        approvedDate
+        UMRN
+      }
     }
   }
-}`;
+`;
 
 const columnDef = [
   {
@@ -85,20 +87,20 @@ export default function Mandate() {
   if (error) {
     return <div className="text-red-500">Something went Wrong...</div>;
   }
-  return (
-    <>
-      <TopBar heading="SIP Mandate">
-        <Toggle text="Show All" />
-        <SearchBar text="Search" placeholder="Search Client Name" />
-      </TopBar>
-      <Table
-        dataJSON={data.getMandates.data}
-        columnDef={columnDef}
-        enablePagination={true}
-        enableSorting={true}
-        rowsToShow={22}
-        customClasses={'h-[900px]'}
-      />
-    </>
-  );
+  if (data.getMandates) {
+    return (
+      <>
+        <TopBar heading="SIP Mandate">
+          <Toggle text="Show All" />
+          <SearchBar text="Search" placeholder="Search Client Name" />
+        </TopBar>
+        <Table
+          dataJSON={data.getMandates.data}
+          columnDef={columnDef}
+          customClasses={'h-[900px]'}
+        />
+      </>
+    );
+  }
+  return <div>Loading....</div>;
 }

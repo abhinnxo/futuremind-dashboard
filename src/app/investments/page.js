@@ -1,6 +1,5 @@
 'use client';
 
-import React, { useState } from 'react';
 import Table from '@/components/Table';
 import SearchBar from '@/components/SearchBar';
 import Toggle from '@/components/Toggle';
@@ -85,16 +84,6 @@ const columnDef = [
 ];
 
 export default function Investments() {
-  const [filterWord, setFilterWord] = useState('');
-  const [toggleState, setToggleState] = useState(false);
-
-  const receiveDataFromChild = (data) => {
-    setFilterWord(data);
-  };
-  const handleToggleChange = (enabled) => {
-    setToggleState(enabled);
-  };
-
   const { data, isLoading, error } = useQuery({
     queryKey: ['abc'],
     queryFn: () => fetchClientData(query),
@@ -106,28 +95,20 @@ export default function Investments() {
   if (error) {
     return <div className="text-red-500">Something went Wrong...</div>;
   }
-
-  return (
-    <>
-      <TopBar heading="Investments">
-        <Toggle text="Show Inactive" toggleEnabled={handleToggleChange} />
-        <SearchBar
-          text="Search"
-          placeholder="Search Scheme Name"
-          sendDataToParent={receiveDataFromChild}
+  if (data.getInvestments) {
+    return (
+      <>
+        <TopBar heading="Investments">
+          <Toggle text="Show Active" />
+          <SearchBar text="Search" placeholder="Search Scheme Name" />
+        </TopBar>
+        <Table
+          dataJSON={data.getInvestments.data.investments}
+          columnDef={columnDef}
+          customClasses={'h-[900px]'}
         />
-      </TopBar>
-      <Table
-        dataJSON={data.getInvestments.data.investments}
-        columnDef={columnDef}
-        enablePagination={true}
-        enableSorting={true}
-        rowsToShow={22}
-        customClasses={'h-[900px]'}
-        filterWord={filterWord}
-        toggleState={toggleState}
-        route="investments"
-      />
-    </>
-  );
+      </>
+    );
+  }
+  return <div>Loading....</div>;
 }
