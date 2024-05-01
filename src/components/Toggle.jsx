@@ -1,26 +1,23 @@
-'use client';
-
-import { useState } from 'react';
+import { useContext } from 'react';
 import { Switch } from '@headlessui/react';
+import { TableContext } from '@/context/TableContextProvider';
 
-function Toggle({ text, toggleEnabled }) {
-  const [enabled, setEnabled] = useState(false);
-
-  if (toggleEnabled) toggleEnabled(enabled);
+function Toggle({ text }) {
+  const { isToggleEnabled, setIsToggleEnabled } = useContext(TableContext);
 
   return (
     <span className="flex items-center gap-1">
       <span className="font-medium">{text}</span>
       <Switch
-        checked={enabled}
-        onChange={() => setEnabled(!enabled)}
-        className={`${enabled ? 'bg-btn-primary' : 'bg-secondary-300'}
+        checked={isToggleEnabled}
+        onChange={() => setIsToggleEnabled(!isToggleEnabled)}
+        className={`${isToggleEnabled ? 'bg-btn-primary' : 'bg-secondary-300'}
           relative inline-flex h-5 w-8 items-center rounded-full`}
       >
         <span className="sr-only">Use setting</span>
         <span
           className={`${
-            enabled ? 'translate-x-4' : 'translate-x-1/4'
+            isToggleEnabled ? 'translate-x-4' : 'translate-x-1/4'
           } inline-block h-3 w-3 transform rounded-full bg-white transition`}
         />
       </Switch>

@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import Sidebar from '@/components/Sidebar';
 import ReactQueryClientProvider from '@/context/ReactQueryClientProvider';
+import TableContextProvider from '@/context/TableContextProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -13,11 +14,13 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <ReactQueryClientProvider>
-      <html lang="en">
-        <body className={inter.className}>
-          <Sidebar>{children}</Sidebar>
-        </body>
-      </html>
+      <TableContextProvider>
+        <html lang="en">
+          <body className={inter.className}>
+            <Sidebar>{children}</Sidebar>
+          </body>
+        </html>
+      </TableContextProvider>
     </ReactQueryClientProvider>
   );
 }

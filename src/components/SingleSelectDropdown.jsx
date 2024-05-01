@@ -1,17 +1,18 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useEffect, useContext } from 'react';
+import { TableContext } from '@/context/TableContextProvider';
 import Image from 'next/image';
 import { Listbox } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 import ArrowHead from '../app/assets/icons/up-arrow.svg';
 
-function SingleSelectDropdown({ text, options, onSelectOption }) {
-  const [selectedOption, setSelectedOption] = useState(options[0]);
+function SingleSelectDropdown({ text, options }) {
+  const { selectedOption, setSelectedOption } = useContext(TableContext);
 
   useEffect(() => {
-    onSelectOption(selectedOption);
-  }, [selectedOption, onSelectOption]);
+    setSelectedOption(options[0]);
+  }, [options, setSelectedOption]);
 
   return (
     <span className="flex gap-2 items-center w-fit max-sm:flex-wrap">

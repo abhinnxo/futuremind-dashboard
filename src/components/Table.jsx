@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useMemo, useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useContext } from 'react';
+import { usePathname } from 'next/navigation';
 import {
   flexRender,
   useReactTable,
@@ -8,42 +9,35 @@ import {
   getSortedRowModel,
 } from '@tanstack/react-table';
 import { ArrowDownIcon } from '@heroicons/react/20/solid';
-import { ArrowUpIcon, CheckIcon } from '@heroicons/react/24/outline';
-import Badge from './Badge';
+import { ArrowUpIcon } from '@heroicons/react/24/outline';
+import { TableContext } from '@/context/TableContextProvider';
+// import Badge from './Badge';
 
-const Table = ({
-  dataJSON,
-  columnDef,
-  enableSorting,
-  customClasses,
-  rowsToShow,
-  filterWord,
-  toggleState,
-  selectedOption,
-  route,
-}) => {
-  const finalData = useMemo(() => dataJSON, [dataJSON]);
-  const finalColumnDef = useMemo(() => columnDef, [columnDef]);
+const Table = ({ dataJSON, columnDef, customClasses }) => {
+  const { isToggleEnabled, searchQuery, selectedOption } =
+    useContext(TableContext);
 
   const [sorting, setSorting] = useState([]);
-  const [visibleRows, setVisibleRows] = useState(rowsToShow || 15);
+  const [visibleRows, setVisibleRows] = useState(25);
 
-  const emailColumnIndex = finalColumnDef.findIndex(
-    (column) => column.accessorKey === 'application.email',
-  );
-  const currStepColumnIndex = finalColumnDef.findIndex(
-    (column) => column.accessorKey === 'application.currentStep',
-  );
-  const kycVerifiedColumnIndex = finalColumnDef.findIndex(
-    (column) => column.accessorKey === 'application.kycVerified',
-  );
-  const planColumnIndex = finalColumnDef.findIndex(
-    (column) => column.accessorKey === 'application.plan',
-  );
+  const pathname = usePathname();
+
+  // const emailColumnIndex = finalColumnDef.findIndex(
+  //   (column) => column.accessorKey === 'application.email',
+  // );
+  // const currStepColumnIndex = finalColumnDef.findIndex(
+  //   (column) => column.accessorKey === 'application.currentStep',
+  // );
+  // const kycVerifiedColumnIndex = finalColumnDef.findIndex(
+  //   (column) => column.accessorKey === 'application.kycVerified',
+  // );
+  // const planColumnIndex = finalColumnDef.findIndex(
+  //   (column) => column.accessorKey === 'application.plan',
+  // );
 
   const tableInstance = useReactTable({
-    columns: finalColumnDef,
-    data: finalData,
+    columns: columnDef,
+    data: dataJSON,
     getCoreRowModel: getCoreRowModel(),
     getSortedRowModel: getSortedRowModel(),
     state: {
@@ -79,10 +73,12 @@ const Table = ({
     };
   }, []);
 
+  // ? can be imporved
+  //  Route based filters
+
   let filter = '';
 
-  // Route based filters
-  if (route === 'users') {
+  if (pathname === '/users') {
     filter = tableInstance
       .getRowModel()
       .rows.slice(0, visibleRows)
@@ -93,16 +89,16 @@ const Table = ({
           rowEl.original.pancard.panCardNumber;
 
         return (
-          (!filterWord ||
+          (!searchQuery ||
             (panCardNumber &&
               panCardNumber
                 .toUpperCase()
-                .includes(filterWord.toUpperCase()))) &&
-          (!toggleState || (rowEl.original && rowEl.original.active))
+                .includes(searchQuery.toUpperCase()))) &&
+          (!isToggleEnabled || (rowEl.original && rowEl.original.active))
         );
       });
-  } else if (route === 'recommended_funds') {
-    if (selectedOption === 'Show All') {
+  } else if (pathname === '/recommended-funds') {
+    if (selectedOption.name === 'Show All') {
       filter = tableInstance.getRowModel().rows.slice(0, visibleRows);
     } else {
       filter = tableInstance
@@ -110,10 +106,12 @@ const Table = ({
         .rows.slice(0, visibleRows)
         .filter((rowEl) => {
           const filterRows = rowEl.original && rowEl.original.category;
-          return filterRows.includes(selectedOption.toUpperCase());
+          return filterRows.includes(
+            selectedOption.name && selectedOption.name.toUpperCase(),
+          );
         });
     }
-  } else if (route === 'subscriptions') {
+  } else if (pathname === '/subscriptions') {
     filter = tableInstance
       .getRowModel()
       .rows.slice(0, visibleRows)
@@ -122,11 +120,11 @@ const Table = ({
 
         return (
           filterRows &&
-          filterRows.toUpperCase().includes(filterWord.toUpperCase())
+          filterRows.toUpperCase().includes(searchQuery.toUpperCase())
         );
       });
-  } else if (route === 'investments') {
-    if (toggleState) {
+  } else if (pathname === '/investments') {
+    if (isToggleEnabled) {
       filter = tableInstance
         .getRowModel()
         .rows.slice(0, visibleRows)
@@ -136,7 +134,7 @@ const Table = ({
           return (
             status === 'ACTIVE' && // Only show rows with 'ACTIVE' status
             filterRows &&
-            filterRows.toUpperCase().includes(filterWord.toUpperCase())
+            filterRows.toUpperCase().includes(searchQuery.toUpperCase())
           );
         });
     } else {
@@ -147,7 +145,7 @@ const Table = ({
           const filterRows = rowEl.original && rowEl.original.schemeName;
           return (
             filterRows &&
-            filterRows.toUpperCase().includes(filterWord.toUpperCase())
+            filterRows.toUpperCase().includes(searchQuery.toUpperCase())
           );
         });
     }
@@ -169,11 +167,7 @@ const Table = ({
                       <th
                         key={columnEl.id}
                         colSpan={columnEl.colSpan}
-                        onClick={
-                          enableSorting
-                            ? () => columnEl.column.toggleSorting()
-                            : undefined
-                        }
+                        onClick={() => columnEl.column.toggleSorting()}
                         className="font-semibold text-nowrap px-4 py-2 text-md cursor-pointer hover:bg-secondary-300"
                       >
                         <div className="flex items-center gap-2">
@@ -181,11 +175,12 @@ const Table = ({
                             columnEl.column.columnDef.header,
                             columnEl.getContext(),
                           )}
-                          {enableSorting &&
+                          {
                             {
                               asc: <ArrowDownIcon width="18px" />,
                               desc: <ArrowUpIcon width="18px" />,
-                            }[columnEl.column.getIsSorted() ?? null]}
+                            }[columnEl.column.getIsSorted() ?? null]
+                          }
                         </div>
                       </th>
                     );
@@ -201,59 +196,59 @@ const Table = ({
                   key={rowEl.id}
                   className="border-b-2 hover:bg-btn-selected text-nowrap"
                 >
-                  {rowEl.getVisibleCells().map((cellEl, index) => {
-                    const isEmailColumn = index === emailColumnIndex;
-                    const isCurrStepColumn = index === currStepColumnIndex;
-                    const isKycVerifiedColumn =
-                      index === kycVerifiedColumnIndex;
-                    const isPlanColumn = index === planColumnIndex;
+                  {rowEl.getVisibleCells().map((cellEl) => {
+                    // const isEmailColumn = index === emailColumnIndex;
+                    // const isCurrStepColumn = index === currStepColumnIndex;
+                    // const isKycVerifiedColumn =
+                    //   index === kycVerifiedColumnIndex;
+                    // const isPlanColumn = index === planColumnIndex;
 
-                    // Conditionally render the Badge component
-                    const badgeText = flexRender(
-                      cellEl.column.columnDef.cell,
-                      cellEl.getContext(),
-                    );
+                    // // Conditionally render the Badge component
+                    // const badgeText = flexRender(
+                    //   cellEl.column.columnDef.cell,
+                    //   cellEl.getContext(),
+                    // );
 
-                    if (isEmailColumn) {
-                      return (
-                        <td key={cellEl.id} className="p-2 text-blue-500">
-                          {flexRender(
-                            cellEl.column.columnDef.cell,
-                            cellEl.getContext(),
-                          )}
-                        </td>
-                      );
-                    }
+                    // if (isEmailColumn) {
+                    //   return (
+                    //     <td key={cellEl.id} className="p-2 text-blue-500">
+                    //       {flexRender(
+                    //         cellEl.column.columnDef.cell,
+                    //         cellEl.getContext(),
+                    //       )}
+                    //     </td>
+                    //   );
+                    // }
 
-                    if (isCurrStepColumn) {
-                      if (cellEl.getValue()) {
-                        return (
-                          <td key={cellEl.id} className="p-2 text-blue-500">
-                            <Badge text={badgeText} type="primary" />
-                          </td>
-                        );
-                      }
-                    }
+                    // if (isCurrStepColumn) {
+                    //   if (cellEl.getValue()) {
+                    //     return (
+                    //       <td key={cellEl.id} className="p-2 text-blue-500">
+                    //         <Badge text={badgeText} type="primary" />
+                    //       </td>
+                    //     );
+                    //   }
+                    // }
 
-                    if (isPlanColumn) {
-                      if (cellEl.getValue()) {
-                        return (
-                          <td key={cellEl.id} className="p-2 text-blue-500">
-                            <Badge text={badgeText} type="primary" />
-                          </td>
-                        );
-                      }
-                    }
+                    // if (isPlanColumn) {
+                    //   if (cellEl.getValue()) {
+                    //     return (
+                    //       <td key={cellEl.id} className="p-2 text-blue-500">
+                    //         <Badge text={badgeText} type="primary" />
+                    //       </td>
+                    //     );
+                    //   }
+                    // }
 
-                    if (isKycVerifiedColumn) {
-                      if (cellEl.getValue()) {
-                        return (
-                          <td key={cellEl.id} className="p-2 text-blue-700">
-                            <CheckIcon width="22px" />
-                          </td>
-                        );
-                      }
-                    }
+                    // if (isKycVerifiedColumn) {
+                    //   if (cellEl.getValue()) {
+                    //     return (
+                    //       <td key={cellEl.id} className="p-2 text-blue-700">
+                    //         <CheckIcon width="22px" />
+                    //       </td>
+                    //     );
+                    //   }
+                    // }
 
                     return (
                       <td key={cellEl.id} className="p-2">

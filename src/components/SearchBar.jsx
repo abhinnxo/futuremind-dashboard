@@ -1,13 +1,8 @@
-'use client';
+import { useContext } from 'react';
+import { TableContext } from '@/context/TableContextProvider';
 
-import React, { useState, useEffect } from 'react';
-
-function SearchBar({ text, placeholder, sendDataToParent }) {
-  const [searchQuery, setSearchQuery] = useState('');
-
-  useEffect(() => {
-    sendDataToParent(searchQuery);
-  }, [searchQuery, sendDataToParent]);
+function SearchBar({ text, placeholder }) {
+  const { setSearchQuery } = useContext(TableContext);
 
   return (
     <div className="flex gap-2 items-center">
