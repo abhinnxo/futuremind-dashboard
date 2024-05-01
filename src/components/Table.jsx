@@ -11,7 +11,6 @@ import {
 import { ArrowDownIcon } from '@heroicons/react/20/solid';
 import { ArrowUpIcon } from '@heroicons/react/24/outline';
 import { TableContext } from '@/context/TableContextProvider';
-// import Badge from './Badge';
 
 const Table = ({ dataJSON, columnDef, customClasses }) => {
   const { isToggleEnabled, searchQuery, selectedOption } =
@@ -21,19 +20,6 @@ const Table = ({ dataJSON, columnDef, customClasses }) => {
   const [visibleRows, setVisibleRows] = useState(25);
 
   const pathname = usePathname();
-
-  // const emailColumnIndex = finalColumnDef.findIndex(
-  //   (column) => column.accessorKey === 'application.email',
-  // );
-  // const currStepColumnIndex = finalColumnDef.findIndex(
-  //   (column) => column.accessorKey === 'application.currentStep',
-  // );
-  // const kycVerifiedColumnIndex = finalColumnDef.findIndex(
-  //   (column) => column.accessorKey === 'application.kycVerified',
-  // );
-  // const planColumnIndex = finalColumnDef.findIndex(
-  //   (column) => column.accessorKey === 'application.plan',
-  // );
 
   const tableInstance = useReactTable({
     columns: columnDef,
@@ -197,59 +183,6 @@ const Table = ({ dataJSON, columnDef, customClasses }) => {
                   className="border-b-2 hover:bg-btn-selected text-nowrap"
                 >
                   {rowEl.getVisibleCells().map((cellEl) => {
-                    // const isEmailColumn = index === emailColumnIndex;
-                    // const isCurrStepColumn = index === currStepColumnIndex;
-                    // const isKycVerifiedColumn =
-                    //   index === kycVerifiedColumnIndex;
-                    // const isPlanColumn = index === planColumnIndex;
-
-                    // // Conditionally render the Badge component
-                    // const badgeText = flexRender(
-                    //   cellEl.column.columnDef.cell,
-                    //   cellEl.getContext(),
-                    // );
-
-                    // if (isEmailColumn) {
-                    //   return (
-                    //     <td key={cellEl.id} className="p-2 text-blue-500">
-                    //       {flexRender(
-                    //         cellEl.column.columnDef.cell,
-                    //         cellEl.getContext(),
-                    //       )}
-                    //     </td>
-                    //   );
-                    // }
-
-                    // if (isCurrStepColumn) {
-                    //   if (cellEl.getValue()) {
-                    //     return (
-                    //       <td key={cellEl.id} className="p-2 text-blue-500">
-                    //         <Badge text={badgeText} type="primary" />
-                    //       </td>
-                    //     );
-                    //   }
-                    // }
-
-                    // if (isPlanColumn) {
-                    //   if (cellEl.getValue()) {
-                    //     return (
-                    //       <td key={cellEl.id} className="p-2 text-blue-500">
-                    //         <Badge text={badgeText} type="primary" />
-                    //       </td>
-                    //     );
-                    //   }
-                    // }
-
-                    // if (isKycVerifiedColumn) {
-                    //   if (cellEl.getValue()) {
-                    //     return (
-                    //       <td key={cellEl.id} className="p-2 text-blue-700">
-                    //         <CheckIcon width="22px" />
-                    //       </td>
-                    //     );
-                    //   }
-                    // }
-
                     return (
                       <td key={cellEl.id} className="p-2">
                         {flexRender(
