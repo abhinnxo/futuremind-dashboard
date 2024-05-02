@@ -12,21 +12,17 @@ import { gql } from 'graphql-request';
 const query = gql`
   {
     getUsers {
-      status
-      message
       data {
-        id
         name
         clientCode
+        pancard {
+          panCardNumber
+        }
         subscription {
-          plan
+          startDate
+          endDate
           credits
-          status
-          mandate {
-            startDate
-            endDate
-            mandateStatus
-          }
+          plan
         }
       }
     }
@@ -35,52 +31,44 @@ const query = gql`
 
 const columnDef = [
   {
-    accessorKey: 'name',
+    accessorFn: (row) => row.pancard?.panCardNumber,
+    header: 'PAN Card No.',
+  },
+  {
+    accessorFn: (row) => row.name,
     header: 'Client Name',
   },
   {
-    accessorKey: 'clientCode',
+    accessorFn: (row) => row.clientCode,
     header: 'Client Code',
   },
   {
-    accessorKey: 'subscription.amount',
+    accessorFn: (row) => row.subscription.amount,
     header: 'Amount',
   },
   {
-    accessorKey: 'subscription.plan',
+    accessorFn: (row) => row.subscription.plan,
     header: 'Plan',
   },
   {
-    accessorKey: 'subscription.credits',
+    accessorFn: (row) => row.subscription.credits,
     header: 'Credits',
   },
   {
-    accessorKey: 'subscription.status',
-    header: 'Status',
-  },
-  {
-    accessorKey: 'subscription.registrationDate',
+    accessorFn: (row) => row.subscription.registrationDate,
     header: 'Registration Date',
   },
   {
-    accessorKey: 'subscription.mandate.uploadDate',
-    header: 'Upload Date',
-  },
-  {
-    accessorKey: 'subscription.mandate.approvedDate',
-    header: 'Approved Date',
-  },
-  {
-    accessorKey: 'subscription.mandate.startDate',
+    accessorFn: (row) => row.subscription.startDate,
     header: 'Start Date',
   },
   {
-    accessorKey: 'subscription.mandate.endDate',
+    accessorFn: (row) => row.subscription.endDate,
     header: 'End Date',
   },
   {
-    accessorKey: 'subscription.mandate.mandateStatus',
-    header: 'Mandate Status',
+    accessorFn: (row) => row.subscription.renewalDate,
+    header: 'Renewal Date',
   },
 ];
 

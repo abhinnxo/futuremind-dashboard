@@ -36,45 +36,43 @@ const query = gql`
 
 const columnDef = [
   {
-    accessorKey: 'name',
+    accessorFn: (row) => row.name,
     header: 'Name',
   },
   {
-    accessorKey: 'application.currentStep',
+    accessorFn: (row) => row.application?.currentStep,
     header: 'Current Step',
   },
-
   {
-    accessorKey: 'application.mandate.type',
+    accessorFn: (row) => row.application?.mandate?.type,
     header: 'Mandate',
   },
   {
-    accessorKey: 'pancard.panCardNumber',
+    accessorFn: (row) => row.pancard?.panCardNumber,
     header: 'PAN Card Number',
   },
   {
-    accessorKey: 'application.plan',
+    accessorFn: (row) => row.application?.plan,
     header: 'Plan',
   },
-
   {
-    accessorKey: 'application.email',
+    accessorFn: (row) => row.application?.email,
     header: 'Email',
   },
   {
-    accessorKey: 'application.mobile',
+    accessorFn: (row) => row.application?.mobile,
     header: 'Mobile',
   },
   {
-    accessorKey: 'application.kycVerified',
+    accessorFn: (row) => row.application?.kycVerified,
     header: 'KYC Verified',
   },
   {
-    accessorKey: 'application.bank.verified',
+    accessorFn: (row) => row.application?.bank?.verified,
     header: 'Bank Verified',
   },
   {
-    accessorKey: 'application.completed',
+    accessorFn: (row) => row.application?.completed,
     header: 'Completed',
   },
 ];
@@ -106,7 +104,7 @@ export default function Home() {
                 dataJSON={data.getUsers.data}
                 columnDef={[
                   {
-                    accessorKey: 'application.currentStep',
+                    accessorFn: (row) => row.application?.currentStep,
                     header: 'Current Step',
                   },
                   {

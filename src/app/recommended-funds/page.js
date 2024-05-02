@@ -12,18 +12,9 @@ import { gql } from 'graphql-request';
 const query = gql`
   {
     getFunds {
-      status
-      message
       data {
-        id
         name
-        type
-        category
         rtaCode
-        isActive
-        recommended {
-          rank
-        }
       }
     }
   }
@@ -31,28 +22,20 @@ const query = gql`
 
 const columnDef = [
   {
-    accessorKey: 'name',
+    accessorFn: (row) => row.recommended?.rank,
+    header: 'Rank',
+  },
+  {
+    accessorFn: (row) => row.name,
     header: 'Name',
   },
   {
-    accessorKey: 'type',
-    header: 'Type',
-  },
-  {
-    accessorKey: 'category',
-    header: 'Category',
-  },
-  {
-    accessorKey: 'rtaCode',
+    accessorFn: (row) => row.rtaCode,
     header: 'RTA Code',
   },
   {
-    accessorKey: 'isActive',
-    header: 'Is Active',
-  },
-  {
-    accessorKey: 'recommended.rank',
-    header: 'Rank',
+    accessorFn: (row) => row.action,
+    header: 'Action',
   },
 ];
 

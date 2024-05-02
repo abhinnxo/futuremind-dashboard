@@ -60,7 +60,7 @@ const query = gql`
 const columnDef = [
   {
     accessorFn: (row) => row.name,
-    header: 'Name',
+    header: 'Client Name',
   },
   {
     accessorFn: (row) => row.clientCode,
@@ -108,7 +108,7 @@ const columnDef = [
   },
   {
     accessorFn: (row) => row.primaryBank,
-    header: 'Bank',
+    header: 'Bank Details',
     cell: (props) => (
       <Modal
         comp={<span className="text-blue-600 underline">Show Details</span>}

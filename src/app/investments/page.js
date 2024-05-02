@@ -11,25 +11,18 @@ import { gql } from 'graphql-request';
 const query = gql`
   {
     getInvestments {
-      status
-      message
       data {
-        current_page
-        last_page
-        per_page
-        lastEvaluatedKey
         investments {
-          id
-          rtaCode
-          schemeName
-          folio
-          units
-          status
-          investmentAmount
-          investmentValue
-          nature
-          classification
-          amc
+          individual {
+            name
+            clientCode
+            pancard {
+              panCardNumber
+            }
+            mandate {
+              amount
+            }
+          }
         }
       }
     }
@@ -38,48 +31,52 @@ const query = gql`
 
 const columnDef = [
   {
-    accessorKey: 'id',
-    header: 'ID',
+    accessorFn: (row) => row.individual.pancard.panCardNumber,
+    header: 'PAN Card No.',
   },
   {
-    accessorKey: 'rtaCode',
-    header: 'RTA Code',
+    accessorFn: (row) => row.individual.name,
+    header: 'Client Name',
   },
   {
-    accessorKey: 'schemeName',
-    header: 'Scheme Name',
+    accessorFn: (row) => row.individual.clientCode,
+    header: 'Client Code',
   },
   {
-    accessorKey: 'folio',
-    header: 'Folio',
+    accessorFn: (row) => row.individual.equity,
+    header: 'Equity',
   },
   {
-    accessorKey: 'units',
-    header: 'Units',
+    accessorFn: (row) => row.individual.debt,
+    header: 'Debt',
   },
   {
-    accessorKey: 'status',
-    header: 'Status',
+    accessorFn: (row) => row.individual.hybrid,
+    header: 'Hybrid',
   },
   {
-    accessorKey: 'investmentAmount',
+    accessorFn: (row) => row.individual.hybrid,
+    header: 'Gold',
+  },
+  {
+    accessorFn: (row) => row.individual.hybrid,
     header: 'Investment Amount',
   },
   {
-    accessorKey: 'investmentValue',
-    header: 'Investment Value',
+    accessorFn: (row) => row.individual.hybrid,
+    header: 'Current Market Valuer',
   },
   {
-    accessorKey: 'nature',
-    header: 'Nature',
+    accessorFn: (row) => row.individual.hybrid,
+    header: 'Profit/Loss',
   },
   {
-    accessorKey: 'classification',
-    header: 'Classification',
+    accessorFn: (row) => row.individual.hybrid,
+    header: 'Absolute RETURNS (%)',
   },
   {
-    accessorKey: 'amc',
-    header: 'AMC',
+    accessorFn: (row) => row.individual.hybrid,
+    header: 'XIRR(%)',
   },
 ];
 
