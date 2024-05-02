@@ -6,6 +6,8 @@ import TopBar from '@/components/TopBar';
 import fetchClientData from '@/services/getData';
 import { useQuery } from '@tanstack/react-query';
 import { gql } from 'graphql-request';
+import Badge from '@/components/Badge';
+import { CheckIcon } from '@heroicons/react/24/outline';
 
 const query = gql`
   {
@@ -42,6 +44,8 @@ const columnDef = [
   {
     accessorFn: (row) => row.application?.currentStep,
     header: 'Current Step',
+    cell: (props) =>
+      props.getValue() ? <Badge text={props.getValue()} type="normal" /> : '',
   },
   {
     accessorFn: (row) => row.application?.mandate?.type,
@@ -54,6 +58,7 @@ const columnDef = [
   {
     accessorFn: (row) => row.application?.plan,
     header: 'Plan',
+    cell: (props) => <Badge text={props.getValue()} type={props.getValue()} />,
   },
   {
     accessorFn: (row) => row.application?.email,
@@ -66,6 +71,12 @@ const columnDef = [
   {
     accessorFn: (row) => row.application?.kycVerified,
     header: 'KYC Verified',
+    cell: (props) =>
+      props.getValue() ? (
+        <CheckIcon className="text-blue-600" width={30} />
+      ) : (
+        ''
+      ),
   },
   {
     accessorFn: (row) => row.application?.bank?.verified,
@@ -106,6 +117,12 @@ export default function Home() {
                   {
                     accessorFn: (row) => row.application?.currentStep,
                     header: 'Current Step',
+                    cell: (props) =>
+                      props.getValue() ? (
+                        <Badge text={props.getValue()} type="normal" />
+                      ) : (
+                        ''
+                      ),
                   },
                   {
                     accessorKey: '',
