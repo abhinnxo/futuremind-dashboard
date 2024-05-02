@@ -31,11 +31,11 @@ const query = gql`
 
 const columnDef = [
   {
-    accessorFn: (row) => row.individual.pancard.panCardNumber,
+    accessorFn: (row) => row.individual?.pancard?.panCardNumber,
     header: 'PAN Card No.',
   },
   {
-    accessorFn: (row) => row.individual.name,
+    accessorFn: (row) => row.individual?.name,
     header: 'Client Name',
   },
   {

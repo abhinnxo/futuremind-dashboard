@@ -13,8 +13,7 @@ import { ArrowUpIcon } from '@heroicons/react/24/outline';
 import { TableContext } from '@/context/TableContextProvider';
 
 const Table = ({ dataJSON, columnDef, customClasses }) => {
-  const { isToggleEnabled, searchQuery, selectedOption } =
-    useContext(TableContext);
+  const { isToggleEnabled, searchQuery } = useContext(TableContext);
 
   const [sorting, setSorting] = useState([]);
   const [visibleRows, setVisibleRows] = useState(25);
@@ -30,6 +29,7 @@ const Table = ({ dataJSON, columnDef, customClasses }) => {
       sorting,
     },
     onSortingChange: setSorting,
+    columnResizeMode: 'onEnd',
   });
 
   const tableRef = useRef(null);
@@ -69,35 +69,49 @@ const Table = ({ dataJSON, columnDef, customClasses }) => {
       .getRowModel()
       .rows.slice(0, visibleRows)
       .filter((rowEl) => {
-        const panCardNumber =
-          rowEl.original &&
-          rowEl.original.pancard &&
-          rowEl.original.pancard.panCardNumber;
+        const pcn =
+          rowEl.original.pancard && rowEl.original.pancard.panCardNumber;
 
         return (
+          (!isToggleEnabled ||
+            (rowEl.original.subscription &&
+              rowEl.original.subscription.status === 'ACTIVE')) &&
           (!searchQuery ||
-            (panCardNumber &&
-              panCardNumber
-                .toUpperCase()
-                .includes(searchQuery.toUpperCase()))) &&
-          (!isToggleEnabled || (rowEl.original && rowEl.original.active))
+            (pcn && pcn.toUpperCase().includes(searchQuery.toUpperCase())))
         );
       });
-  } else if (pathname === '/recommended-funds') {
-    if (selectedOption.name === 'Show All') {
-      filter = tableInstance.getRowModel().rows.slice(0, visibleRows);
-    } else {
-      filter = tableInstance
-        .getRowModel()
-        .rows.slice(0, visibleRows)
-        .filter((rowEl) => {
-          const filterRows = rowEl.original && rowEl.original.category;
-          return filterRows.includes(
-            selectedOption.name && selectedOption.name.toUpperCase(),
-          );
-        });
-    }
-  } else if (pathname === '/subscriptions') {
+  } else if (pathname === '/sip-mandate') {
+    filter = tableInstance
+      .getRowModel()
+      .rows.slice(0, visibleRows)
+      .filter((rowEl) => {
+        const cn = rowEl.original.clientName && rowEl.original.clientName;
+
+        return (
+          (!isToggleEnabled ||
+            (rowEl.original.subscription &&
+              rowEl.original.subscription.status === 'ACTIVE')) &&
+          (!searchQuery ||
+            (cn && cn.toUpperCase().includes(searchQuery.toUpperCase())))
+        );
+      });
+  }
+  // else if (pathname === '/recommended-funds') {
+  //   if (selectedOption.name === 'Show All') {
+  //     filter = tableInstance.getRowModel().rows.slice(0, visibleRows);
+  //   } else {
+  //     filter = tableInstance
+  //       .getRowModel()
+  //       .rows.slice(0, visibleRows)
+  //       .filter((rowEl) => {
+  //         const filterRows = rowEl.original && rowEl.original.category;
+  //         return filterRows.includes(
+  //           selectedOption.name && selectedOption.name.toUpperCase(),
+  //         );
+  //       });
+  //   }
+  // }
+  else if (pathname === '/subscriptions') {
     filter = tableInstance
       .getRowModel()
       .rows.slice(0, visibleRows)
@@ -109,33 +123,35 @@ const Table = ({ dataJSON, columnDef, customClasses }) => {
           filterRows.toUpperCase().includes(searchQuery.toUpperCase())
         );
       });
-  } else if (pathname === '/investments') {
-    if (isToggleEnabled) {
-      filter = tableInstance
-        .getRowModel()
-        .rows.slice(0, visibleRows)
-        .filter((rowEl) => {
-          const filterRows = rowEl.original && rowEl.original.schemeName;
-          const status = rowEl.original && rowEl.original.status;
-          return (
-            status === 'ACTIVE' && // Only show rows with 'ACTIVE' status
-            filterRows &&
-            filterRows.toUpperCase().includes(searchQuery.toUpperCase())
-          );
-        });
-    } else {
-      filter = tableInstance
-        .getRowModel()
-        .rows.slice(0, visibleRows)
-        .filter((rowEl) => {
-          const filterRows = rowEl.original && rowEl.original.schemeName;
-          return (
-            filterRows &&
-            filterRows.toUpperCase().includes(searchQuery.toUpperCase())
-          );
-        });
-    }
-  } else filter = tableInstance.getRowModel().rows.slice(0, visibleRows);
+  }
+  // else if (pathname === '/investments') {
+  //   if (isToggleEnabled) {
+  //     filter = tableInstance
+  //       .getRowModel()
+  //       .rows.slice(0, visibleRows)
+  //       .filter((rowEl) => {
+  //         const filterRows = rowEl.original && rowEl.original.schemeName;
+  //         const status = rowEl.original && rowEl.original.status;
+  //         return (
+  //           status === 'ACTIVE' && // Only show rows with 'ACTIVE' status
+  //           filterRows &&
+  //           filterRows.toUpperCase().includes(searchQuery.toUpperCase())
+  //         );
+  //       });
+  //   } else {
+  //     filter = tableInstance
+  //       .getRowModel()
+  //       .rows.slice(0, visibleRows)
+  //       .filter((rowEl) => {
+  //         const filterRows = rowEl.original && rowEl.original.schemeName;
+  //         return (
+  //           filterRows &&
+  //           filterRows.toUpperCase().includes(searchQuery.toUpperCase())
+  //         );
+  //       });
+  //   }
+  // }
+  else filter = tableInstance.getRowModel().rows.slice(0, visibleRows);
 
   return (
     <div
