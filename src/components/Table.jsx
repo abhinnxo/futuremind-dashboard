@@ -13,7 +13,8 @@ import { ArrowUpIcon } from '@heroicons/react/24/outline';
 import { TableContext } from '@/context/TableContextProvider';
 
 const Table = ({ dataJSON, columnDef, customClasses }) => {
-  const { isToggleEnabled, searchQuery } = useContext(TableContext);
+  const { isToggleEnabled, searchQuery, selectedOption } =
+    useContext(TableContext);
 
   const [sorting, setSorting] = useState([]);
   const [visibleRows, setVisibleRows] = useState(25);
@@ -95,23 +96,21 @@ const Table = ({ dataJSON, columnDef, customClasses }) => {
             (cn && cn.toUpperCase().includes(searchQuery.toUpperCase())))
         );
       });
-  }
-  // else if (pathname === '/recommended-funds') {
-  //   if (selectedOption.name === 'Show All') {
-  //     filter = tableInstance.getRowModel().rows.slice(0, visibleRows);
-  //   } else {
-  //     filter = tableInstance
-  //       .getRowModel()
-  //       .rows.slice(0, visibleRows)
-  //       .filter((rowEl) => {
-  //         const filterRows = rowEl.original && rowEl.original.category;
-  //         return filterRows.includes(
-  //           selectedOption.name && selectedOption.name.toUpperCase(),
-  //         );
-  //       });
-  //   }
-  // }
-  else if (pathname === '/subscriptions') {
+  } else if (pathname === '/recommended-funds') {
+    if (selectedOption.name === 'Show All') {
+      filter = tableInstance.getRowModel().rows.slice(0, visibleRows);
+    } else {
+      filter = tableInstance
+        .getRowModel()
+        .rows.slice(0, visibleRows)
+        .filter((rowEl) => {
+          const filterRows = rowEl.original && rowEl.original.category;
+          return filterRows.includes(
+            selectedOption.name && selectedOption.name.toUpperCase(),
+          );
+        });
+    }
+  } else if (pathname === '/subscriptions') {
     filter = tableInstance
       .getRowModel()
       .rows.slice(0, visibleRows)

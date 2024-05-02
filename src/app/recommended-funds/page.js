@@ -11,10 +11,17 @@ import { gql } from 'graphql-request';
 
 const query = gql`
   {
-    getFunds {
+    getRecommendedFunds {
       data {
+        id
         name
+        type
+        category
         rtaCode
+        isActive
+        recommended {
+          rank
+        }
       }
     }
   }
@@ -22,20 +29,28 @@ const query = gql`
 
 const columnDef = [
   {
-    accessorFn: (row) => row.recommended?.rank,
-    header: 'Rank',
-  },
-  {
     accessorFn: (row) => row.name,
     header: 'Name',
+  },
+  {
+    accessorFn: (row) => row.type,
+    header: 'Type',
+  },
+  {
+    accessorFn: (row) => row.category,
+    header: 'Category',
   },
   {
     accessorFn: (row) => row.rtaCode,
     header: 'RTA Code',
   },
   {
-    accessorFn: (row) => row.action,
-    header: 'Action',
+    accessorFn: (row) => row.isActive,
+    header: 'Is Active',
+  },
+  {
+    accessorFn: (row) => row.recommended.rank,
+    header: 'Rank',
   },
 ];
 
@@ -51,7 +66,7 @@ export default function RecommendedFunds() {
   if (error) {
     return <div className="text-red-500">Something went Wrong...</div>;
   }
-  if (data.getFunds) {
+  if (data.getRecommendedFunds) {
     return (
       <>
         <TopBar heading="Recommended Funds">
@@ -74,7 +89,7 @@ export default function RecommendedFunds() {
         </TopBar>
         {!isLoading && (
           <Table
-            dataJSON={data.getFunds.data}
+            dataJSON={data.getRecommendedFunds.data}
             columnDef={columnDef}
             customClasses={'h-[900px]'}
           />
