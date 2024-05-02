@@ -5,22 +5,19 @@ import { Dialog, Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
 
 const Modal = ({ comp, heading, body }) => {
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
 
-  function closeModal() {
-    setIsOpen(false);
-  }
-
-  function openModal() {
-    setIsOpen(true);
-  }
   return (
     <span>
-      <button type="button" onClick={openModal}>
+      <button type="button" onClick={() => setIsOpen(true)}>
         {comp}
       </button>
       <Transition appear show={isOpen} as={Fragment}>
-        <Dialog as="div" className="relative z-10" onClose={closeModal}>
+        <Dialog
+          as="div"
+          className="relative z-10"
+          onClose={() => setIsOpen(false)}
+        >
           <Transition.Child
             as={Fragment}
             enter="ease-out duration-300"
@@ -46,7 +43,7 @@ const Modal = ({ comp, heading, body }) => {
                 <Dialog.Panel className="w-full max-w-md max-h-96 overflow-y-scroll transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                   <XMarkIcon
                     className="ml-auto w-5 h-5 cursor-pointer"
-                    onClick={closeModal}
+                    onClick={() => setIsOpen(false)}
                   />
                   <Dialog.Title
                     as="h3"
@@ -55,7 +52,7 @@ const Modal = ({ comp, heading, body }) => {
                     {heading}
                   </Dialog.Title>
                   <div className="mt-2">
-                    <p className="text-sm text-gray-500">{body}</p>
+                    <div className="text-sm text-gray-500">{body}</div>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>
