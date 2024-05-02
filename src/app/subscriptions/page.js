@@ -8,6 +8,7 @@ import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
 import fetchClientData from '@/services/getData';
 import { useQuery } from '@tanstack/react-query';
 import { gql } from 'graphql-request';
+import Badge from '@/components/Badge';
 
 const query = gql`
   {
@@ -49,6 +50,7 @@ const columnDef = [
   {
     accessorFn: (row) => row.subscription.plan,
     header: 'Plan',
+    cell: (props) => <Badge text={props.getValue()} type={props.getValue()} />,
   },
   {
     accessorFn: (row) => row.subscription.credits,
