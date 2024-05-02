@@ -21,7 +21,7 @@ const navigation = [
     name: 'Subscriptions',
     href: '/subscriptions',
   },
-  { name: 'Mandate', href: '/mandate' },
+  { name: 'SIP Mandate', href: '/sip-mandate' },
   { name: 'Investments', href: '/investments' },
 ];
 
